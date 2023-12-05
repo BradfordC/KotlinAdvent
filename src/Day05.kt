@@ -44,12 +44,12 @@ fun main() {
     }
 
 
-    fun runMap(value: Long, soilMap: MutableList<SeedMap>): Long {
+    fun runMap(value: Long, soilMap: MutableList<SeedMap>): Pair<Long, Long> {
         val range = soilMap.firstOrNull { it.sourceRange.contains(value) }
         return if (range == null) {
-            value
+            Pair(value, 0)
         } else {
-            value + range.dif
+            Pair(value + range.dif, range.sourceRange.last - value)
         }
     }
 
@@ -60,7 +60,7 @@ fun main() {
         for (seed in seeds) {
             var currentValue = seed
             for (soilMap in maps) {
-                currentValue = runMap(currentValue, soilMap)
+                currentValue = runMap(currentValue, soilMap).first
             }
             locations.add(currentValue)
         }
@@ -72,11 +72,16 @@ fun main() {
         val maps = createMaps(input.subList(1, input.size))
         var minLocation = Long.MAX_VALUE
         for (seedRange in seeds) {
-            for (seed in seedRange) {
+            var seed = seedRange.first
+            while ( seed <= seedRange.last) {
                 var currentValue = seed
+                var space = Long.MAX_VALUE
                 for (soilMap in maps) {
-                    currentValue = runMap(currentValue, soilMap)
+                    val returnValue = runMap(currentValue, soilMap)
+                    currentValue = returnValue.first
+                    space = space.coerceAtMost(returnValue.second)
                 }
+                seed += space + 1
                 minLocation = minLocation.coerceAtMost(currentValue)
             }
         }
