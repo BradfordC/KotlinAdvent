@@ -3,7 +3,7 @@ package aoc.grids
 open class Grid(input: List<String>) {
     val height = input.size
     val width = input.maxOf { it.length }
-    private val data = input.map { line -> line.toList().map { it.toString() }.toMutableList() }
+    private val data = input.mapIndexed { y, line -> line.mapIndexed { x, char -> Cell(x, y, char.toString()) }.toMutableList() }
     var wrap = false
     var borderValue = ""
 
@@ -14,8 +14,11 @@ open class Grid(input: List<String>) {
     fun getCell(x: Int, y: Int): Cell {
         val realX = if (wrap) (x + width) % width else x // Doesn't work if we're *WAY* out of bounds
         val realY = if (wrap) (y + height) % height else y
-        val realVal = if (inBounds(realX, realY)) data[realY][realX] else borderValue
-        return Cell(realX, realY, realVal)
+        return if (inBounds(realX, realY)) {
+            data[realY][realX]
+        } else {
+            Cell(realX, realY, borderValue)
+        }
     }
 
     fun setValue(point: Point, value: String) {
@@ -26,7 +29,7 @@ open class Grid(input: List<String>) {
         val realX = if (wrap) (x + width) % width else x // Doesn't work if we're *WAY* out of bounds
         val realY = if (wrap) (y + height) % height else y
         if (inBounds(realX, realY)) {
-            data[realY][realX] = value
+            data[realY][realX] = Cell(realX, realY, value)
         }
     }
 
@@ -100,8 +103,8 @@ open class Grid(input: List<String>) {
         return x in 0 until width && y in 0 until height
     }
 
-    private fun rowString(row: List<String>): String {
-        return row.reduce { acc, v -> acc + v }
+    private fun rowString(row: List<Cell>): String {
+        return row.fold("") { acc, v -> acc + v.value }
     }
 
     fun gridString(): String {
