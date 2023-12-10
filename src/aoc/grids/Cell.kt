@@ -9,6 +9,7 @@ class Cell(x: Int, y: Int, val value: String): Point(x, y) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
+        if (!super.equals(other)) return false
 
         other as Cell
 
@@ -18,6 +19,8 @@ class Cell(x: Int, y: Int, val value: String): Point(x, y) {
     }
 
     override fun hashCode(): Int {
-        return value.hashCode()
+        var result = super.hashCode()
+        result = 31 * result + value.hashCode()
+        return result
     }
 }
