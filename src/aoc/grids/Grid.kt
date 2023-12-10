@@ -30,18 +30,50 @@ open class Grid(input: List<String>) {
         }
     }
 
-    fun getNeighboringCells(cell: Point, diagonal: Boolean = true, includeOob: Boolean = false): List<Cell> {
+    fun cells(): List<Cell> {
+        val cells = mutableListOf<Cell>()
+        for (x in 0 until width) {
+            for (y in 0 until height) {
+                cells.add(getCell(x, y))
+            }
+        }
+        return cells.toList()
+    }
+
+    fun getNeighbors(point: Point, diagonal: Boolean = true, includeOob: Boolean = false): List<Cell> {
         val neighbors = mutableListOf<Cell>()
         for (dx in -1..1) {
             for (dy in -1 .. 1) {
                 if (dx == 0 && dy == 0) continue
                 if (!diagonal && dx != 0 && dy != 0) continue
-                if (includeOob || wrap || inBounds(cell.x + dx, cell.y + dy)) {
-                    neighbors.add(getCell(cell.x + dx, cell.y + dy))
+                if (includeOob || wrap || inBounds(point.x + dx, point.y + dy)) {
+                    neighbors.add(getCell(point.x + dx, point.y + dy))
                 }
             }
         }
         return neighbors
+    }
+
+    fun fuzzySelect(point: Point, diagonal: Boolean = true): List<Cell> {
+        val cell = getCell(point)
+        return fuzzySelect(point, diagonal) { it.value == cell.value }
+    }
+
+    fun fuzzySelect(point: Point, diagonal: Boolean = true, match: (Cell) -> Boolean): List<Cell> {
+        val start = getCell(point)
+        val selected = mutableSetOf(start)
+        val toAssess = mutableListOf(start)
+        while(toAssess.isNotEmpty()) {
+            val next = toAssess.removeLast()
+            for (neighbor in getNeighbors(next, diagonal)) {
+                if (selected.contains(neighbor) || !match(neighbor)) {
+                    continue
+                }
+                selected.add(neighbor)
+                toAssess.add(neighbor)
+            }
+        }
+        return selected.toList()
     }
 
     fun getRegion(xRange: IntRange, yRange: IntRange): Region {

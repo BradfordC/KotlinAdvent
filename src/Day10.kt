@@ -6,7 +6,7 @@ import java.lang.Exception
 fun main() {
 
     fun nextPoint(pipe: Cell, from: Point): Point {
-        // Assuming the from cell actually lines up with the pipe correctly
+        // Assuming the "from" cell actually lines up with the pipe correctly
         val fromAbove = from.y < pipe.y
         val fromLeft = from.x < pipe.x
         val fromRight = from.x > pipe.x
@@ -27,7 +27,7 @@ fun main() {
     }
 
     fun rightSides(pipe: Cell, from: Point): List<Point> {
-        // Assuming the from cell actually lines up with the pipe correctly
+        // Assuming the "from" cell actually lines up with the pipe correctly
         val fromAbove = from.y < pipe.y
         val fromLeft = from.x < pipe.x
         val fromRight = from.x > pipe.x
@@ -36,6 +36,7 @@ fun main() {
         val goUp = Point(pipe.x, pipe.y - 1)
         val goLeft = Point(pipe.x - 1, pipe.y)
         val goRight = Point(pipe.x + 1, pipe.y)
+        // Hard code S since it's easier to manually check where it should go than write a function to detect it
         return when (pipe.value) {
             "|" -> if (fromAbove) listOf(goLeft) else listOf(goRight)
             "-" -> if (fromLeft) listOf(goDown) else listOf(goUp)
@@ -88,24 +89,6 @@ fun main() {
         return path.size / 2
     }
 
-    fun bucketFill(grid: Grid, point: Point, match: (Cell) -> Boolean = {true}) {
-        val start = grid.getCell(point)
-        val visited = mutableSetOf(start)
-        val toFill = mutableListOf(start)
-        while(toFill.isNotEmpty()) {
-            val cell = toFill.removeLast()
-            grid.setValue(cell, ".")
-            val neighbors = grid.getNeighboringCells(cell, false)
-            for (cell in neighbors) {
-                if (visited.contains(cell) || !match(cell)) {
-                    continue
-                }
-                toFill.add(cell)
-                visited.add(cell)
-            }
-        }
-    }
-
     fun part2(input: List<String>): Int {
         val grid = Grid(input)
         val path = findPath(grid)
@@ -125,24 +108,26 @@ fun main() {
             for (y in 0 until grid.height) {
                 if (x == 0 || x == grid.width - 1 || y == 0 || y == grid.height - 1) {
                     val cell = grid.getCell(x, y)
-                    if (cell.value == " ") bucketFill(grid, cell) { it.value == " "}
+                    if (cell.value == " ") {
+                        grid.fuzzySelect(cell).forEach { grid.setValue(it, ".") }
+                    }
                 }
             }
         }
 
-
-
-//         Follow the pipes, tracking the cells on the outside of each
+        // Follow the pipes, tracking the cells on the outside of each
         val start = findStartIndex(path)
         var i = start
         val di = if (path[i + 1].x == path[i].x + 1) -1 else 1 // Figure out which direction to go so that the outside is on our right
         while (i + di != start) {
-            var current = path[i]
-            var nextIndex = (i + di + path.size) % path.size
-            var next = path[nextIndex]
+            val current = path[i]
+            val nextIndex = (i + di + path.size) % path.size
+            val next = path[nextIndex]
             for (outsidePoint in rightSides(next, current)) {
-                if (grid.getCell(outsidePoint).value == " ") {
-                    bucketFill(grid, outsidePoint) { it.value == " "}
+                val cell = grid.getCell(outsidePoint)
+                // Mark any outside cells as outside
+                if (cell.value == " ") {
+                    grid.fuzzySelect(cell).forEach { grid.setValue(it, ".") }
                 }
             }
             i = nextIndex

@@ -28,7 +28,7 @@ open class PathfindingGrid(input: List<String>) : Grid(input) {
         return points
     }
 
-    fun findPath(source: Point, dest: Point): List<Cell> {
+    protected fun findPath(source: Point, dest: Point): List<Cell> {
         val nodeMap = List(height) { y ->
             MutableList(width) { x ->
                 PathfindingNode(
@@ -46,7 +46,7 @@ open class PathfindingGrid(input: List<String>) : Grid(input) {
             if (current.point.x == dest.x && current.point.y == dest.y) {
                 break
             }
-            for (neighbor in this.getNeighboringCells(current.point, diagonal = diagonalMovement)) {
+            for (neighbor in this.getNeighbors(current.point, diagonal = diagonalMovement)) {
                 val neighborNode = nodeMap[neighbor.y][neighbor.x]
                 if (neighborNode.visited) continue
                 if (walls.matches(getCell(neighborNode.point).value)) continue
