@@ -36,8 +36,9 @@ open class Grid(input: List<String>) {
             for (dy in -1 .. 1) {
                 if (dx == 0 && dy == 0) continue
                 if (!diagonal && dx != 0 && dy != 0) continue
-                if (includeOob || inBounds(cell.x + dx, cell.y + dy)) continue
-                neighbors.add(getCell(cell.x + dx, cell.y + dy))
+                if (includeOob || wrap || inBounds(cell.x + dx, cell.y + dy)) {
+                    neighbors.add(getCell(cell.x + dx, cell.y + dy))
+                }
             }
         }
         return neighbors
