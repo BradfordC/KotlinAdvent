@@ -28,7 +28,7 @@ open class PathfindingGrid(input: List<String>) : Grid(input) {
         return points
     }
 
-    protected fun findPath(source: Point, dest: Point): List<Cell> {
+    fun findPath(source: Point, dest: Point): List<Cell> {
         val nodeMap = List(height) { y ->
             MutableList(width) { x ->
                 PathfindingNode(
