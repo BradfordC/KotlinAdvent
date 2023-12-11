@@ -1,3 +1,5 @@
+val ktor_version = "2.3.7"
+
 plugins {
     kotlin("jvm") version "1.8.21"
 }
@@ -12,4 +14,9 @@ tasks {
     wrapper {
         gradleVersion = "8.5"
     }
+}
+
+dependencies {
+    implementation("io.ktor:ktor-client-core:$ktor_version")
+    implementation("io.ktor:ktor-client-okhttp:$ktor_version")
 }
