@@ -1,4 +1,6 @@
 import aoc.parseInts
+import aoc.println
+import aoc.readInput
 
 fun main() {
     fun getNext(values: List<Int>): List<Int> {

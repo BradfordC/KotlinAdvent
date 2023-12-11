@@ -1,4 +1,6 @@
 import aoc.grids.*
+import aoc.println
+import aoc.readInput
 import kotlin.math.*
 
 fun main() {

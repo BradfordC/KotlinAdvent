@@ -1,6 +1,8 @@
 import aoc.grids.Cell
 import aoc.grids.Grid
 import aoc.grids.Point
+import aoc.println
+import aoc.readInput
 import java.lang.Exception
 
 fun main() {

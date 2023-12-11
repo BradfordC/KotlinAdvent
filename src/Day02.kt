@@ -1,3 +1,6 @@
+import aoc.println
+import aoc.readInput
+
 fun main() {
     fun part1(input: List<String>): Int {
         var answer = 0

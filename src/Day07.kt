@@ -1,3 +1,6 @@
+import aoc.println
+import aoc.readInput
+
 val CARDS = listOf('2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A')
 val CARDS_JOKER_LOW = listOf('J', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'Q', 'K', 'A')
 

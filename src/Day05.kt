@@ -1,3 +1,6 @@
+import aoc.println
+import aoc.readInput
+
 fun main() {
     data class SeedMap(val sourceRange: LongRange, val dif: Long)
 
