@@ -70,3 +70,9 @@ fun lcm(vararg values: Int): Int {
 fun lcm(values: Iterable<Int>): Int {
     return lcm(values.map { it.toLong() }).toInt()
 }
+
+fun Int.clamp(min: Int, max: Int): Int {
+    if (this < min) return min
+    if (this > max) return max
+    return this
+}
