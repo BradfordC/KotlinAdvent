@@ -1,5 +1,8 @@
 package aoc.grids
 
+import aoc.collections.SortedList
+import java.nio.file.Path
+
 open class PathfindingGrid(input: List<String>) : Grid(input) {
     var walls = Regex("")
     var diagonalMovement = true
@@ -38,8 +41,8 @@ open class PathfindingGrid(input: List<String>) : Grid(input) {
         }
         val startingNode = PathfindingNode(source, null, 0.0, distanceWrapSafe(source, dest), true)
         nodeMap[source.y][source.x] = startingNode
-        // TODO: Switch to a datatype that sorts faster/automatically (e.g. tree)
-        val toVisit = mutableListOf(startingNode)
+        val toVisit = SortedList<PathfindingNode>(compareBy { it.travelled + it.heuristic })
+        toVisit.add(startingNode)
         while (toVisit.isNotEmpty()) {
             val current = toVisit.removeFirst()
             current.visited = true
@@ -60,7 +63,6 @@ open class PathfindingGrid(input: List<String>) : Grid(input) {
                     neighborNode.travelled = neighborTravelled
                 }
             }
-            toVisit.sortBy { it.travelled + it.heuristic }
         }
 
         val path = mutableListOf<Cell>()
