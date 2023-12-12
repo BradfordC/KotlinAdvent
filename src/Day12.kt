@@ -61,39 +61,6 @@ fun main() {
 
     val permutationsMap = mutableMapOf<Pair<String, List<Int>>, Long>()
 
-    fun canFit(springs: String, at: Int, size: Int): Boolean {
-        if (at + size > springs.length) {
-            return false
-        }
-        val spring = at until at + size
-        if (springs.substring(spring).contains('.')) {
-            return false
-        }
-        val next = at + size
-        return next == springs.length || springs[next] != '#'
-    }
-
-    fun shortCircuit(springs: String, groups: List<Int>): Long {
-        val key = Pair(springs, groups)
-        if (groups.isEmpty()) {
-            return permutationsMap.getOrPut(key) {
-                if (springs.any { it == '#' }) 0 else 1
-            }
-        }
-        val minLength = groups.sum() + groups.size - 1
-        if (minLength > springs.length) {
-            return permutationsMap.getOrPut(key) { 0 }
-        }
-        if (springs.all { it == '?' } && springs.length < 20) { // Max size to prevent Long overflow (!)
-            return permutationsMap.getOrPut(key) {
-                val space = springs.length - minLength
-                val count = (space + groups.size).toLong().choose(space.toLong())
-                count
-            }
-        }
-        return -1
-    }
-
     fun String.strip(char: Char): String {
         if (this.isEmpty()) {
             return this
@@ -103,27 +70,42 @@ fun main() {
         return this.substring(start..last)
     }
 
+    fun groupFits(springs: String, size: Int): Boolean {
+        if (size > springs.length) {
+            return false
+        }
+        if (springs.take(size).any { it == '.' }) {
+            return false
+        }
+        if (size < springs.length && springs[size] == '#') {
+            return false
+        }
+        return true
+    }
+
     fun getPermutations(springs: String, groups: List<Int>): Long {
         val key = Pair(springs, groups)
         return permutationsMap.getOrPut(key) {
-            val easy = shortCircuit(springs, groups)
-            if (easy >= 0) {
-                return easy
-            }
             var answer = 0L
-            val firstKnown = springs.indexOf('#')
-            val range = if (firstKnown >= 0) 0..firstKnown else springs.indices
-            for (i in range) {
-                if (springs[i] != '.') {
-                    if (canFit(springs, i, groups[0])) {
-                        val remainingStart = i + groups[0] + 1
-                        val remaining = if (remainingStart < springs.length) springs.substring(remainingStart) else ""
-                        val remainingGroups = groups.subList(1, groups.size)
-                        answer += getPermutations(remaining.strip('.'), remainingGroups)
-                    }
+
+            if (springs.isEmpty()) {
+                return if (groups.isEmpty()) 1 else 0
+            }
+            if (groups.isEmpty()) {
+                return if (springs.none { it == '#'}) 1 else 0
+            }
+
+            if (springs[0] != '#') {
+                answer += getPermutations(springs.drop(1), groups)
+            }
+
+            if (springs[0] != '.') {
+                if (groupFits(springs, groups[0])) {
+                    answer += getPermutations(springs.drop(groups[0] + 1), groups.drop(1))
                 }
             }
-            return answer
+
+            answer
         }
     }
 
@@ -132,6 +114,7 @@ fun main() {
 
         for ((i, line) in input.withIndex()) {
             val halves = line.split(" ")
+//            val halves = "???????????????????# 1,2,1,2,3,1".split(" ")
             val original = halves[0]
             val originalGroups = halves[1].split(",").map { it.toInt() }.toList()
 
@@ -140,6 +123,7 @@ fun main() {
             repeat(5) { groupSizes.addAll(originalGroups) }
 
             val permutations = getPermutations(map.strip('.'), groupSizes)
+//            val permutations = getPermutations(original, originalGroups)
             "${i + 1} $permutations".println()
             answer += permutations
         }
