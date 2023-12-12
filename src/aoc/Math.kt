@@ -71,8 +71,58 @@ fun lcm(values: Iterable<Int>): Int {
     return lcm(values.map { it.toLong() }).toInt()
 }
 
-fun Int.clamp(min: Int, max: Int): Int {
+fun Long.clamp(min: Long, max: Long): Long {
     if (this < min) return min
     if (this > max) return max
     return this
+}
+
+fun Int.clamp(min: Int, max: Int): Int {
+    return this.toLong().clamp(min.toLong(), max.toLong()).toInt()
+}
+
+fun minAndMax(x: Long, y: Long): Pair<Long, Long> {
+    if (x < y) {
+        return Pair(x, y)
+    }
+    return Pair(y, x)
+}
+
+fun minAndMax(x: Int, y: Int): Pair<Int, Int> {
+    if (x < y) {
+        return Pair(x, y)
+    }
+    return Pair(y, x)
+}
+
+fun factorial(v: Long): Long {
+    if (v > 20) throw Exception("$v! will overflow Long")
+    if (v == 0L) return 1
+    return (1..v).reduce { a, b -> a * b }
+}
+
+fun factorial(v: Int): Int {
+    if (v > 12) throw Exception("$v! will overflow Int")
+    return factorial(v.toLong()).toInt()
+}
+
+fun factDiv(dividend: Long, divisor: Long): Long {
+    if (dividend < divisor) throw Exception("Dividend must be greater")
+    if (dividend == divisor) return 1
+    if (dividend > 20) throw Exception("$dividend! will overflow Long")
+    return (divisor + 1..dividend).reduce { a, b -> a * b }
+}
+
+fun factDiv(dividend: Int, divisor: Int): Int {
+    if (dividend > 15) throw Exception("$dividend! will overflow Int")
+    return factDiv(dividend.toLong(), divisor.toLong()).toInt()
+}
+
+fun Long.choose(k: Long): Long {
+    val (min, max) = minAndMax(k, this - k)
+    return factDiv(this, max) / factorial(min)
+}
+
+fun Int.choose(k: Int): Int {
+    return this.toLong().choose(k.toLong()).toInt()
 }

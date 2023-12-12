@@ -59,123 +59,89 @@ fun main() {
         return answer
     }
 
-    fun String.supportsBlock(block: IntRange): Boolean {
-        if (block.last >= this.length) {
+    val permutationsMap = mutableMapOf<Pair<String, List<Int>>, Long>()
+
+    fun canFit(springs: String, at: Int, size: Int): Boolean {
+        if (at + size > springs.length) {
             return false
         }
-        if (this.substring(block).contains('.')) {
+        val spring = at until at + size
+        if (springs.substring(spring).contains('.')) {
             return false
         }
-        val leftEdge = block.first - 1
-        if (leftEdge >= 0 && this[leftEdge] == '#') {
-            return false
-        }
-        val rightEdge = block.last + 1
-        if (rightEdge < length && this[rightEdge] == '#') {
-            return false
-        }
-        return true
+        val next = at + size
+        return next == springs.length || springs[next] != '#'
     }
 
-    fun MutableList<IntRange>.advanceTopBlock(startingPoints: Map<Int, List<Int>>): Boolean {
-        val block = this.removeLast()
-        val length = block.last - block.first + 1
-        val starts = startingPoints[length]!!
-        for (start in starts.filter { it > block.first }) {
-            val newBlock = start until (start + length)
-            if (starts.contains(start)) {
-                this.add(newBlock)
-                return true
+    fun shortCircuit(springs: String, groups: List<Int>): Long {
+        val key = Pair(springs, groups)
+        if (groups.isEmpty()) {
+            return permutationsMap.getOrPut(key) {
+                if (springs.any { it == '#' }) 0 else 1
             }
         }
-        return false
-    }
-
-    fun MutableList<IntRange>.makeProgress(startingPoints: Map<Int, List<Int>>) {
-        while (this.isNotEmpty()) {
-            if (advanceTopBlock(startingPoints)) {
-                break
+        val minLength = groups.sum() + groups.size - 1
+        if (minLength > springs.length) {
+            return permutationsMap.getOrPut(key) { 0 }
+        }
+        if (springs.all { it == '?' } && springs.length < 20) { // Max size to prevent Long overflow (!)
+            return permutationsMap.getOrPut(key) {
+                val space = springs.length - minLength
+                val count = (space + groups.size).toLong().choose(space.toLong())
+                count
             }
         }
+        return -1
     }
 
-    fun MutableList<IntRange>.placeNextBlock(startingPoints: List<Int>, size: Int): Boolean {
-        val end = lastOrNull()?.last ?: -2
-        for (start in startingPoints.filter { it > end + 1 }) {
-            add(start until start + size)
-            return true
+    fun String.strip(char: Char): String {
+        if (this.isEmpty()) {
+            return this
         }
-        return false
+        val start = this.indexOfFirst { it != char }
+        val last = this.indexOfLast { it != char }
+        return this.substring(start..last)
     }
 
-    fun MutableList<IntRange>.visualize(map: String) {
-        val blocks = StringBuilder()
-        for (i in 0 until map.length) {
-            if (this.any { it.contains(i) }) {
-                blocks.append("_")
+    fun getPermutations(springs: String, groups: List<Int>): Long {
+        val key = Pair(springs, groups)
+        return permutationsMap.getOrPut(key) {
+            val easy = shortCircuit(springs, groups)
+            if (easy >= 0) {
+                return easy
             }
-            else {
-                blocks.append(" ")
-            }
-        }
-        "$blocks".println()
-        map.println()
-    }
-
-    fun newWay(map: String, groupSizes: List<Int>): Long {
-        var answer = 0L
-
-        val sizeToStarts = { size: Int ->
-            map
-                .withIndex()
-                .filter { it.value != '.' }
-                .map { it.index }
-                .filter { map.supportsBlock(it until it + size) }
-                .toList()
-        }
-
-        val starts = groupSizes
-            .distinct()
-            .associateWith { sizeToStarts(it) }
-
-        val stack = mutableListOf<IntRange>()
-        stack.placeNextBlock(starts[groupSizes[0]]!!, groupSizes[0])
-        var i = 0
-        while (stack.isNotEmpty()) {
-            if(stack.size < groupSizes.size) {
-                val nextSize = groupSizes[stack.size]
-                if(!stack.placeNextBlock(starts[nextSize]!!, nextSize)) {
-                    stack.makeProgress(starts)
+            var answer = 0L
+            val firstKnown = springs.indexOf('#')
+            val range = if (firstKnown >= 0) 0..firstKnown else springs.indices
+            for (i in range) {
+                if (springs[i] != '.') {
+                    if (canFit(springs, i, groups[0])) {
+                        val remainingStart = i + groups[0] + 1
+                        val remaining = if (remainingStart < springs.length) springs.substring(remainingStart) else ""
+                        val remainingGroups = groups.subList(1, groups.size)
+                        answer += getPermutations(remaining.strip('.'), remainingGroups)
+                    }
                 }
             }
-            else {
-                stack.makeProgress(starts)
-            }
-
-            if(stack.size == groupSizes.size) {
-                if(checkInverse(map, stack)) {
-                    stack.visualize(map)
-                    answer++
-                }
-            }
+            return answer
         }
-        return answer
     }
 
     fun part2(input: List<String>): Long {
         var answer = 0L
+
         for ((i, line) in input.withIndex()) {
             val halves = line.split(" ")
             val original = halves[0]
-            val originalSizes = halves[1].parseInts()
+            val originalGroups = halves[1].split(",").map { it.toInt() }.toList()
 
             val map = List(5) { original }.reduce { acc, s -> "$acc?$s" }
             val groupSizes = mutableListOf<Int>()
-            repeat(5) { groupSizes.addAll(halves[1].parseInts()) }
+            repeat(5) { groupSizes.addAll(originalGroups) }
 
-            val myAnswer = newWay(map, groupSizes)
-            "${i + 1}: $myAnswer".println()
-            answer += myAnswer
+            val permutations = getPermutations(map.strip('.'), groupSizes)
+            "${i + 1} $permutations".println()
+            answer += permutations
         }
         return answer
     }
