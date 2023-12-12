@@ -133,7 +133,7 @@ fun main() {
     fun runParts(inputName: String) {
         inputName.println()
         val input = readInput(inputName)
-//        "Part 1: ${part1(input)}".println()
+        "Part 1: ${part1(input)}".println()
         "Part 2: ${part2(input)}".println()
         println()
     }
