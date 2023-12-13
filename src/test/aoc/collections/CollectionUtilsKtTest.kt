@@ -54,4 +54,20 @@ internal class CollectionUtilsKtTest {
         assertEquals(6, all.size)
         assertTrue(all.all { it.isEmpty() })
     }
+
+    @Test
+    fun powerSet() {
+        assertEquals(1, listOf<String>().powerSet().count())
+        assertEquals(2, listOf("A").powerSet().count())
+        assertEquals(4, listOf("A", "B").powerSet().count())
+        assertEquals(32, listOf("A", "B", "C", "D", "E").powerSet().count())
+
+        assertEquals(1, listOf("A", "B", "C", "D", "E").powerSet(0).count())
+        assertEquals(5, listOf("A", "B", "C", "D", "E").powerSet(1).count())
+        assertEquals(10, listOf("A", "B", "C", "D", "E").powerSet(2).count())
+        assertEquals(10, listOf("A", "B", "C", "D", "E").powerSet(3).count())
+        assertEquals(5, listOf("A", "B", "C", "D", "E").powerSet(4).count())
+        assertEquals(1, listOf("A", "B", "C", "D", "E").powerSet(5).count())
+        assertEquals(0, listOf("A", "B", "C", "D", "E").powerSet(6).count())
+    }
 }
