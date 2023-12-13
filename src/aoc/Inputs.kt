@@ -49,6 +49,7 @@ suspend fun downloadInput(name: String, year: Int = LocalDate.now().year): Boole
     val response = client.get(url) {
         headers {
             append("cookie", "session=$token")
+            append("User-Agent", "https://github.com/BradfordC/KotlinAdvent2023 by aoc@redhotice.net")
         }
     }
     client.close()
