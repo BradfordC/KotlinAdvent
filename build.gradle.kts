@@ -19,4 +19,8 @@ tasks {
 dependencies {
     implementation("io.ktor:ktor-client-core:$ktor_version")
     implementation("io.ktor:ktor-client-okhttp:$ktor_version")
+    implementation("org.junit.jupiter:junit-jupiter:5.10.0")
+}
+repositories {
+    mavenCentral()
 }

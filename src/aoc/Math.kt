@@ -11,7 +11,7 @@ fun Long.isPrime(): Boolean {
     }
     val maxCheck = sqrt(this.toDouble()).toInt()
     for (i in 3..maxCheck step 2) {
-        if (this % i != 0L) {
+        if (this % i == 0L) {
             return false
         }
     }
@@ -23,6 +23,7 @@ fun Int.isPrime(): Boolean {
 }
 
 fun Long.primeFactors(): List<Long> {
+    if (this == 1L) return listOf(1)
     val primes = mutableListOf<Long>()
     var remaining = this
     while(remaining != 1L) {
@@ -78,7 +79,9 @@ fun Long.clamp(min: Long, max: Long): Long {
 }
 
 fun Int.clamp(min: Int, max: Int): Int {
-    return this.toLong().clamp(min.toLong(), max.toLong()).toInt()
+    if (this < min) return min
+    if (this > max) return max
+    return this
 }
 
 fun minAndMax(x: Long, y: Long): Pair<Long, Long> {
@@ -95,15 +98,15 @@ fun minAndMax(x: Int, y: Int): Pair<Int, Int> {
     return Pair(y, x)
 }
 
-fun factorial(v: Long): Long {
-    if (v > 20) throw Exception("$v! will overflow Long")
-    if (v == 0L) return 1
-    return (1..v).reduce { a, b -> a * b }
+fun Long.factorial(): Long {
+    if (this > 20) throw Exception("$this! will overflow Long")
+    if (this == 0L) return 1
+    return (1..this).reduce { a, b -> a * b }
 }
 
-fun factorial(v: Int): Int {
-    if (v > 12) throw Exception("$v! will overflow Int")
-    return factorial(v.toLong()).toInt()
+fun Int.factorial(): Int {
+    if (this > 12) throw Exception("$this! will overflow Int")
+    return this.toLong().factorial().toInt()
 }
 
 fun factDiv(dividend: Long, divisor: Long): Long {
@@ -120,7 +123,7 @@ fun factDiv(dividend: Int, divisor: Int): Int {
 
 fun Long.choose(k: Long): Long {
     val (min, max) = minAndMax(k, this - k)
-    return factDiv(this, max) / factorial(min)
+    return factDiv(this, max) / min.factorial()
 }
 
 fun Int.choose(k: Int): Int {
