@@ -17,6 +17,5 @@ fun <T> List<T>.split(delimiter: (T) -> Boolean): List<List<T>> {
 }
 
 fun <T> List<T>.powerSet(size: Int? = null): Sequence<List<T>> {
-    val sequence = PowerSetSequence(this)
-    return if (size == null) sequence else sequence.filter { it.size == size }
+    return PowerSetSequence(this, size)
 }

@@ -1,16 +1,20 @@
 package aoc.collections
 
-class PowerSetSequence<T>(private val list: List<T>): Sequence<List<T>> {
-    override fun iterator(): Iterator<List<T>> {
-        return PowerSetIterator(list)
+class PowerSetSequence<T>(private val list: List<T>, private val size: Int? = null): Sequence<List<T>> {
+    init {
+        if (size != null && size > list.size) throw IllegalArgumentException("Requested size ($size) > size of list (${list.size})")
     }
 
-    private class PowerSetIterator<T>(private val list: List<T>): Iterator<List<T>> {
+    override fun iterator(): Iterator<List<T>> {
+        return PowerSetIterator(list, size)
+    }
 
-        private var nextIndices = mutableListOf<Int>()
+    private class PowerSetIterator<T>(private val list: List<T>, private val size: Int? = null): Iterator<List<T>> {
+
+        private var nextIndices = if (size == null) mutableListOf() else (0 until size).toMutableList()
 
         override fun hasNext(): Boolean {
-            return nextIndices.size <= list.size
+            return nextIndices.size <= (size ?: list.size)
         }
 
         override fun next(): List<T> {

@@ -1,9 +1,11 @@
 package aoc.collections
 
+import aoc.println
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
+import java.lang.StringBuilder
 
 internal class CollectionUtilsKtTest {
 
@@ -68,6 +70,5 @@ internal class CollectionUtilsKtTest {
         assertEquals(10, listOf("A", "B", "C", "D", "E").powerSet(3).count())
         assertEquals(5, listOf("A", "B", "C", "D", "E").powerSet(4).count())
         assertEquals(1, listOf("A", "B", "C", "D", "E").powerSet(5).count())
-        assertEquals(0, listOf("A", "B", "C", "D", "E").powerSet(6).count())
     }
 }
