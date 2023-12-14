@@ -95,11 +95,11 @@ open class Grid(input: List<String>) {
     }
 
 
-    private fun inBounds(point: Point): Boolean {
+    fun inBounds(point: Point): Boolean {
         return inBounds(point.x, point.y)
     }
 
-    private fun inBounds(x: Int, y: Int): Boolean {
+    fun inBounds(x: Int, y: Int): Boolean {
         return x in 0 until width && y in 0 until height
     }
 
