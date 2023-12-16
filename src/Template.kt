@@ -1,7 +1,4 @@
-import aoc.downloadInput
-import aoc.inputExists
-import aoc.println
-import aoc.readInput
+import aoc.*
 import kotlinx.coroutines.runBlocking
 
 fun main() {
@@ -18,14 +15,21 @@ fun main() {
         for (line in input) {
 
         }
-        return answer
+        return answer + 1
     }
 
     fun runParts(inputName: String) {
         inputName.println()
         val input = readInput(inputName)
-        "Part 1: ${part1(input)}".println()
-        "Part 2: ${part2(input)}".println()
+
+        val p1 = part1(input)
+        "Part 1: $p1".println()
+        if (p1 != 0) p1.toClipboard()
+
+        val p2 = part2(input)
+        "Part 2: $p2".println()
+        if (p2 != 0) p2.toClipboard()
+
         println()
     }
 

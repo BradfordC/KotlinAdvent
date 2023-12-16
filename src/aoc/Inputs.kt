@@ -4,6 +4,8 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import java.awt.Toolkit
+import java.awt.datatransfer.StringSelection
 import java.io.File
 import java.time.LocalDate
 import kotlin.io.path.Path
@@ -63,4 +65,10 @@ suspend fun downloadInput(name: String, year: Int = LocalDate.now().year): Boole
     File("resources/$name.txt").writeText(response.body())
 
     return true
+}
+
+fun Any.toClipboard() {
+    val selection = StringSelection(this.toString())
+    val clipboard = Toolkit.getDefaultToolkit().systemClipboard
+    clipboard.setContents(selection, selection)
 }
