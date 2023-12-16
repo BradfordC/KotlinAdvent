@@ -24,6 +24,14 @@ open class Point(val x: Int, val y: Int) {
         return dx + dy;
     }
 
+    operator fun plus(other: Point): Point {
+        return Point(x + other.x, y + other.y)
+    }
+
+    operator fun times(v: Int): Point {
+        return Point(x * v, y * v)
+    }
+
     override fun toString(): String {
         return "Point($x,$y)"
     }
