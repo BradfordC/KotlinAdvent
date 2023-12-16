@@ -61,12 +61,12 @@ fun main() {
 
         val path = mutableListOf(startCell)
 
-        var pipe = findPipe(grid, startCell)
+        var pipe = findPipe(grid, startCell.point)
         while (grid.get(pipe).value != "S") {
             val prev = path.last()
             val nextCell = grid.get(pipe)
             path.add(nextCell)
-            pipe = nextPoint(nextCell, prev)
+            pipe = nextPoint(nextCell, prev.point)
         }
 
         return path
@@ -78,7 +78,7 @@ fun main() {
         var minI = -1
         for ((i, point) in path.withIndex()) {
             if(point.y < min.y || (point.y == min.y && point.x < min.x)) {
-                min = point
+                min = point.point
                 minI = i
             }
         }
@@ -102,7 +102,7 @@ fun main() {
             }
         }
         for (cell in path) {
-            grid.set(cell, cell.value)
+            grid.set(cell.point, cell.value)
         }
 
         // Fill the borders
@@ -111,7 +111,7 @@ fun main() {
                 if (x == 0 || x == grid.width - 1 || y == 0 || y == grid.height - 1) {
                     val cell = grid.get(x, y)
                     if (cell.value == " ") {
-                        grid.fuzzySelect(cell, true).forEach { grid.set(it, ".") }
+                        grid.fuzzySelect(cell.point, true).forEach { grid.set(it.point, ".") }
                     }
                 }
             }
@@ -125,11 +125,11 @@ fun main() {
             val current = path[i]
             val nextIndex = (i + di + path.size) % path.size
             val next = path[nextIndex]
-            for (outsidePoint in rightSides(next, current)) {
+            for (outsidePoint in rightSides(next, current.point)) {
                 val cell = grid.get(outsidePoint)
                 // Mark any outside cells as outside
                 if (cell.value == " ") {
-                    grid.fuzzySelect(cell, true).forEach { grid.set(it, ".") }
+                    grid.fuzzySelect(cell.point, true).forEach { grid.set(it.point, ".") }
                 }
             }
             i = nextIndex

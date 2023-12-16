@@ -76,10 +76,8 @@ internal class GridTest {
 
         assertEquals(Cell(0, 0, "."), grid.get(0, 0))
         assertEquals(Cell(0, 0, "."), grid.get(Point(0, 0)))
-        assertEquals(Cell(0, 0, "."), grid.get(Cell(0, 0, "A"))) // Only care about the coordinates
         assertEquals(Cell(4, 9, "."), grid.get(4, 9))
         assertEquals(Cell(4, 9, "."), grid.get(4, 9))
-        assertEquals(Cell(4, 9, "."), grid.get(Cell(4, 9, "A"))) // Only care about the coordinates
     }
 
     @Test

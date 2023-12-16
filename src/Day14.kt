@@ -18,11 +18,11 @@ fun Grid.tiltNorth() {
         for (y in height - 1 downTo 0) {
             val cell = get(x, y)
             if (cell.value == "O") {
-                set(cell, ".")
+                set(cell.point, ".")
                 rocks ++
             }
             if (cell.value == "#") {
-                deposit(cell, rocks, 0, 1)
+                deposit(cell.point, rocks, 0, 1)
                 rocks = 0
             }
         }
@@ -83,14 +83,14 @@ fun main() {
             val cell = grid.get(point)
             var lower = grid.get(point.x + dir.x, point.y + dir.y)
             if (cell.value == "#" && lower.value != "#") {
-                val magnet = Rock(cell, null)
+                val magnet = Rock(cell.point, null)
                 magnets.add(magnet)
                 while (lower.value != "#") {
                     magnetMap[Point(lower.x, lower.y)] = magnet
                     if (lower.value == "O") {
-                        val rock = Rock(lower, null)
+                        val rock = Rock(lower.point, null)
                         rocks.add(rock)
-                        grid.set(lower, ".")
+                        grid.set(lower.point, ".")
                         magnet.addToYoink(rock)
                     }
                     lower = grid.get(lower.x + dir.x, lower.y + dir.y)

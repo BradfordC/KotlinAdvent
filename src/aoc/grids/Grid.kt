@@ -90,7 +90,7 @@ open class Grid(val width: Int, val height: Int, defaultValue: String = ".") {
         val toAssess = mutableListOf(start)
         while(toAssess.isNotEmpty()) {
             val next = toAssess.removeLast()
-            for (neighbor in getNeighbors(next, diagonal)) {
+            for (neighbor in getNeighbors(next.point, diagonal)) {
                 if (selected.contains(neighbor) || !match(neighbor)) {
                     continue
                 }

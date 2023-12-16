@@ -52,9 +52,9 @@ open class PathfindingGrid(input: List<String>) : Grid(input) {
                 val neighborNode = nodeMap[neighbor.y][neighbor.x]
                 if (neighborNode.visited) continue
                 if (walls.matches(get(neighborNode.point).value)) continue
-                val neighborTravelled = current.travelled + distanceWrapSafe(current.point, neighbor)
+                val neighborTravelled = current.travelled + distanceWrapSafe(current.point, neighbor.point)
                 if (neighborNode.cameFrom == null) {
-                    neighborNode.heuristic = heuristicWrapSafe(neighbor, dest)
+                    neighborNode.heuristic = heuristicWrapSafe(neighbor.point, dest)
                     toVisit.add(neighborNode)
                 }
                 if (neighborTravelled < neighborNode.travelled) {
