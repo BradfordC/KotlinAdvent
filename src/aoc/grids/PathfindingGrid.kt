@@ -6,28 +6,10 @@ open class PathfindingGrid(input: List<String>) : Grid(input) {
     var walls = Regex("")
     var diagonalMovement = true
 
-    var distance = { source: Point, dest: Point -> source.distanceTo(dest) }
-    var heuristic = { source: Point, dest: Point -> source.distanceTo(dest) }
+    var heuristicFun = { source: Point, dest: Point -> source.distanceTo(dest) }
 
-    protected fun distanceWrapSafe(source: Point, dest: Point): Double {
-        return wrappedPoints(dest).minOf { distance(source, it) }
-    }
-
-    protected fun heuristicWrapSafe(source: Point, dest: Point): Double {
-        return wrappedPoints(dest).minOf { heuristic(source, it) }
-    }
-
-    protected fun wrappedPoints(point: Point): List<Point> {
-        val points = mutableListOf(point)
-        if (wrap) {
-            for (dx in -1..1) {
-                for (dy in -1..1) {
-                    if (dx == 0 && dy == 0) continue
-                    points.add(Point(point.x + dx * this.width, point.y + dy * this.height))
-                }
-            }
-        }
-        return points
+    fun heuristic(source: Point, dest: Point): Double {
+        return wrappedPoints(dest).minOf { heuristicFun(source, it) }
     }
 
     fun findPath(source: Point, dest: Point): List<Cell> {
@@ -38,7 +20,7 @@ open class PathfindingGrid(input: List<String>) : Grid(input) {
                 )
             }
         }
-        val startingNode = PathfindingNode(source, null, 0.0, distanceWrapSafe(source, dest), true)
+        val startingNode = PathfindingNode(source, null, 0.0, distance(source, dest), true)
         nodeMap[source.y][source.x] = startingNode
         val toVisit = SortedList<PathfindingNode>(compareBy { it.travelled + it.heuristic })
         toVisit.add(startingNode)
@@ -52,9 +34,9 @@ open class PathfindingGrid(input: List<String>) : Grid(input) {
                 val neighborNode = nodeMap[neighbor.y][neighbor.x]
                 if (neighborNode.visited) continue
                 if (walls.matches(get(neighborNode.point).value)) continue
-                val neighborTravelled = current.travelled + distanceWrapSafe(current.point, neighbor.point)
+                val neighborTravelled = current.travelled + distance(current.point, neighbor.point)
                 if (neighborNode.cameFrom == null) {
-                    neighborNode.heuristic = heuristicWrapSafe(neighbor.point, dest)
+                    neighborNode.heuristic = heuristic(neighbor.point, dest)
                     toVisit.add(neighborNode)
                 }
                 if (neighborTravelled < neighborNode.travelled) {

@@ -149,6 +149,43 @@ internal class GridTest {
     }
 
     @Test
+    fun distance() {
+        val grid = Grid(5, 10)
+
+        assertEquals(2.0, grid.distance(Point(1, 0), Point(3, 0)))
+        assertEquals(3.0, grid.distance(Point(3, 2), Point(3, 5)))
+        assertEquals(4.0, grid.distance(Point(0, 0), Point(4, 0)))
+        assertEquals(9.85, grid.distance(Point(0, 0), Point(4, 9)), 0.01)
+    }
+
+    @Test
+    fun distance_wrap() {
+        val grid = Grid(5, 10)
+        grid.wrap = true
+
+        // Not wrap
+        assertEquals(3.0, grid.distance(Point(3, 2), Point(3, 5)))
+        assertEquals(2.0, grid.distance(Point(3, 2), Point(1, 2)))
+        // Wrap
+        assertEquals(1.0, grid.distance(Point(0, 0), Point(4, 0)))
+        assertEquals(1.0, grid.distance(Point(0, 0), Point(0, 9)))
+        assertEquals(1.41, grid.distance(Point(0, 0), Point(4, 9)), 0.01)
+        assertEquals(1.41, grid.distance(Point(4, 9), Point(0, 0)), 0.01)
+        assertEquals(2.23, grid.distance(Point(4, 9), Point(1, 8)), 0.01)
+    }
+
+    @Test
+    fun distance_custom() {
+        val grid = Grid(5, 10)
+        grid.distanceFun = { p1, p2 -> p1.distanceManhattanTo(p2) }
+
+        assertEquals(2.0, grid.distance(Point(1, 0), Point(3, 0)))
+        assertEquals(3.0, grid.distance(Point(3, 2), Point(3, 5)))
+        assertEquals(4.0, grid.distance(Point(0, 0), Point(4, 0)))
+        assertEquals(13.0, grid.distance(Point(0, 0), Point(4, 9)))
+    }
+
+    @Test
     fun getNeighbors() {
         val input = """
             ABC

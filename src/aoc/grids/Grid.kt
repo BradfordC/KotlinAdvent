@@ -8,6 +8,7 @@ open class Grid(val width: Int, val height: Int, defaultValue: String = ".") {
     val ys = 0 until height
     var wrap = false
     var borderValue = ""
+    var distanceFun = { source: Point, dest: Point -> source.distanceTo(dest) }
 
     constructor(input: List<String>) : this(input.minOf { it.length }, input.size) {
         require(input.minOf { it.length } == input.maxOf { it.length }) { "Grid is uneven" }
@@ -53,6 +54,31 @@ open class Grid(val width: Int, val height: Int, defaultValue: String = ".") {
         if (inBounds(realX, realY)) {
             data[realY][realX] = Cell(realX, realY, value)
         }
+    }
+
+    fun inBounds(point: Point): Boolean {
+        return inBounds(point.x, point.y)
+    }
+
+    fun inBounds(x: Int, y: Int): Boolean {
+        return x in 0 until width && y in 0 until height
+    }
+
+    protected fun wrappedPoints(point: Point): List<Point> {
+        val points = mutableListOf(point)
+        if (wrap) {
+            for (dy in -1..1) {
+                for (dx in -1..1) {
+                    if (dx == 0 && dy == 0) continue
+                    points.add(Point(point.x + dx * this.width, point.y + dy * this.height))
+                }
+            }
+        }
+        return points
+    }
+
+    fun distance(source: Point, dest: Point): Double {
+        return wrappedPoints(dest).minOf { distanceFun(source, it) }
     }
 
     fun cells(): List<Cell> {
@@ -114,15 +140,6 @@ open class Grid(val width: Int, val height: Int, defaultValue: String = ".") {
             }
         }
         return regions
-    }
-
-
-    fun inBounds(point: Point): Boolean {
-        return inBounds(point.x, point.y)
-    }
-
-    fun inBounds(x: Int, y: Int): Boolean {
-        return x in 0 until width && y in 0 until height
     }
 
     private fun rowString(row: List<Cell>): String {
