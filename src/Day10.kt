@@ -98,11 +98,11 @@ fun main() {
         // Clear everything that isn't part of the main pipe
         for (x in 0..grid.width) {
             for (y in 0..grid.height) {
-                grid.setValue(x, y, " ")
+                grid.set(x, y, " ")
             }
         }
         for (cell in path) {
-            grid.setValue(cell, cell.value)
+            grid.set(cell, cell.value)
         }
 
         // Fill the borders
@@ -111,7 +111,7 @@ fun main() {
                 if (x == 0 || x == grid.width - 1 || y == 0 || y == grid.height - 1) {
                     val cell = grid.get(x, y)
                     if (cell.value == " ") {
-                        grid.fuzzySelect(cell).forEach { grid.setValue(it, ".") }
+                        grid.fuzzySelect(cell, true).forEach { grid.set(it, ".") }
                     }
                 }
             }
@@ -129,7 +129,7 @@ fun main() {
                 val cell = grid.get(outsidePoint)
                 // Mark any outside cells as outside
                 if (cell.value == " ") {
-                    grid.fuzzySelect(cell).forEach { grid.setValue(it, ".") }
+                    grid.fuzzySelect(cell, true).forEach { grid.set(it, ".") }
                 }
             }
             i = nextIndex

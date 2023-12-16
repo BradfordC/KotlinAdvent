@@ -1,11 +1,11 @@
 package aoc.grids
 
 open class Grid(val width: Int, val height: Int, defaultValue: String = ".") {
-    val C = 0 until width
-    val R = 0 until height
 
     private var data: List<MutableList<Cell>> = initData(width, height, defaultValue)
 
+    val xs = 0 until width
+    val ys = 0 until height
     var wrap = false
     var borderValue = ""
 
@@ -15,9 +15,9 @@ open class Grid(val width: Int, val height: Int, defaultValue: String = ".") {
     }
 
     constructor(width: Int, height: Int, fill: (Int, Int) -> String) : this(width, height) {
-        for (x in C) {
-            for (y in R) {
-                setValue(x, y, fill(x, y))
+        for (x in xs) {
+            for (y in ys) {
+                set(x, y, fill(x, y))
             }
         }
     }
@@ -43,11 +43,11 @@ open class Grid(val width: Int, val height: Int, defaultValue: String = ".") {
         }
     }
 
-    fun setValue(point: Point, value: String) {
-        setValue(point.x, point.y, value)
+    fun set(point: Point, value: String) {
+        set(point.x, point.y, value)
     }
 
-    fun setValue(x: Int, y: Int, value: String) {
+    fun set(x: Int, y: Int, value: String) {
         val realX = if (wrap) (x + width) % width else x // Doesn't work if we're *WAY* out of bounds
         val realY = if (wrap) (y + height) % height else y
         if (inBounds(realX, realY)) {
@@ -57,18 +57,18 @@ open class Grid(val width: Int, val height: Int, defaultValue: String = ".") {
 
     fun cells(): List<Cell> {
         val cells = mutableListOf<Cell>()
-        for (x in 0 until width) {
-            for (y in 0 until height) {
-                cells.add(get(x, y))
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                    cells.add(get(x, y))
             }
         }
         return cells.toList()
     }
 
-    fun getNeighbors(point: Point, diagonal: Boolean = true, includeOob: Boolean = false): List<Cell> {
+    fun getNeighbors(point: Point, diagonal: Boolean = false, includeOob: Boolean = false): List<Cell> {
         val neighbors = mutableListOf<Cell>()
-        for (dx in -1..1) {
-            for (dy in -1 .. 1) {
+        for (dy in -1 .. 1) {
+            for (dx in -1..1) {
                 if (dx == 0 && dy == 0) continue
                 if (!diagonal && dx != 0 && dy != 0) continue
                 if (includeOob || wrap || inBounds(point.x + dx, point.y + dy)) {
@@ -79,12 +79,12 @@ open class Grid(val width: Int, val height: Int, defaultValue: String = ".") {
         return neighbors
     }
 
-    fun fuzzySelect(point: Point, diagonal: Boolean = true): List<Cell> {
+    fun fuzzySelect(point: Point, diagonal: Boolean = false): List<Cell> {
         val cell = get(point)
         return fuzzySelect(point, diagonal) { it.value == cell.value }
     }
 
-    fun fuzzySelect(point: Point, diagonal: Boolean = true, match: (Cell) -> Boolean): List<Cell> {
+    fun fuzzySelect(point: Point, diagonal: Boolean = false, match: (Cell) -> Boolean): List<Cell> {
         val start = get(point)
         val selected = mutableSetOf(start)
         val toAssess = mutableListOf(start)

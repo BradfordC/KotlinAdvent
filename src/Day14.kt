@@ -8,7 +8,7 @@ import kotlinx.coroutines.runBlocking
 
 fun Grid.deposit(cell: Point, rocks: Int, dx: Int, dy: Int) {
     for (i in 0 until rocks) {
-        setValue(cell.x + dx * (i + 1), cell.y + dy * (i + 1), "O")
+        set(cell.x + dx * (i + 1), cell.y + dy * (i + 1), "O")
     }
 }
 
@@ -18,7 +18,7 @@ fun Grid.tiltNorth() {
         for (y in height - 1 downTo 0) {
             val cell = get(x, y)
             if (cell.value == "O") {
-                setValue(cell, ".")
+                set(cell, ".")
                 rocks ++
             }
             if (cell.value == "#") {
@@ -90,7 +90,7 @@ fun main() {
                     if (lower.value == "O") {
                         val rock = Rock(lower, null)
                         rocks.add(rock)
-                        grid.setValue(lower, ".")
+                        grid.set(lower, ".")
                         magnet.addToYoink(rock)
                     }
                     lower = grid.get(lower.x + dir.x, lower.y + dir.y)

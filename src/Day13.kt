@@ -90,7 +90,7 @@ fun main() {
                 for (y in 0 until grid.height) {
                     val newGrid = Grid(input.subList(window[0] + 1, window[1]))
                     val oldValue = newGrid.get(x, y).value
-                    newGrid.setValue(x, y, if (oldValue == ".") "#" else ".")
+                    newGrid.set(x, y, if (oldValue == ".") "#" else ".")
 
                     val newX = getXReflection(newGrid, xReflection - 1)
                     if (newX >= 0) {

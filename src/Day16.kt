@@ -21,11 +21,11 @@ fun energize(input: List<String>, starting: Pair<Point, Point>): Long {
     val rightGrid = Grid(input)
     for (x in 0 until energized.width) {
         for (y in 0 until  energized.height) {
-            energized.setValue(x, y, ".")
-            upGrid.setValue(x, y, ".")
-            downGrid.setValue(x, y, ".")
-            leftGrid.setValue(x, y, ".")
-            rightGrid.setValue(x, y, ".")
+            energized.set(x, y, ".")
+            upGrid.set(x, y, ".")
+            downGrid.set(x, y, ".")
+            leftGrid.set(x, y, ".")
+            rightGrid.set(x, y, ".")
         }
     }
     val dirMap = mapOf(
@@ -41,7 +41,7 @@ fun energize(input: List<String>, starting: Pair<Point, Point>): Long {
         val nextBeams = mutableListOf<Pair<Point, Point>>()
         for (beam in lightBeams) {
             val next = Point(beam.first.x + beam.second.x, beam.first.y + beam.second.y)
-            energized.setValue(next, "#")
+            energized.set(next, "#")
 
             when (grid.get(next).value) {
                 "|" -> if (beam.second == RIGHT || beam.second == LEFT) {
@@ -77,7 +77,7 @@ fun energize(input: List<String>, starting: Pair<Point, Point>): Long {
         for (nextBeam in nextBeams) {
             val dirGrid = dirMap[nextBeam.second]!!
             if (dirGrid.get(nextBeam.first).value == ".") {
-                dirGrid.setValue(nextBeam.first, "#")
+                dirGrid.set(nextBeam.first, "#")
                 lightBeams.add(nextBeam)
             }
         }
