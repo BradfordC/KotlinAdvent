@@ -1,7 +1,6 @@
 package aoc.grids
 
 import aoc.collections.SortedList
-import java.nio.file.Path
 
 open class PathfindingGrid(input: List<String>) : Grid(input) {
     var walls = Regex("")
@@ -52,7 +51,7 @@ open class PathfindingGrid(input: List<String>) : Grid(input) {
             for (neighbor in this.getNeighbors(current.point, diagonal = diagonalMovement)) {
                 val neighborNode = nodeMap[neighbor.y][neighbor.x]
                 if (neighborNode.visited) continue
-                if (walls.matches(getCell(neighborNode.point).value)) continue
+                if (walls.matches(get(neighborNode.point).value)) continue
                 val neighborTravelled = current.travelled + distanceWrapSafe(current.point, neighbor)
                 if (neighborNode.cameFrom == null) {
                     neighborNode.heuristic = heuristicWrapSafe(neighbor, dest)
@@ -68,7 +67,7 @@ open class PathfindingGrid(input: List<String>) : Grid(input) {
         val path = mutableListOf<Cell>()
         var toAdd = nodeMap[dest.y][dest.x]
         while (toAdd.visited) {
-            path.add(getCell(toAdd.point))
+            path.add(get(toAdd.point))
             if (toAdd.cameFrom == null) {
                 break
             }
@@ -77,7 +76,7 @@ open class PathfindingGrid(input: List<String>) : Grid(input) {
         if (toAdd.point != source) {
             return mutableListOf()
         }
-        path.add(getCell(toAdd.point))
+        path.add(get(toAdd.point))
         return path.reversed()
     }
 

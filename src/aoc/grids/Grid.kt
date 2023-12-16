@@ -1,17 +1,39 @@
 package aoc.grids
 
-open class Grid(input: List<String>) {
-    val height = input.size
-    val width = input.maxOf { it.length }
-    private val data = input.mapIndexed { y, line -> line.mapIndexed { x, char -> Cell(x, y, char.toString()) }.toMutableList() }
+open class Grid(val width: Int, val height: Int, defaultValue: String = ".") {
+    val C = 0 until width
+    val R = 0 until height
+
+    private var data: List<MutableList<Cell>> = initData(width, height, defaultValue)
+
     var wrap = false
     var borderValue = ""
 
-    fun getCell(point: Point): Cell {
-        return getCell(point.x, point.y)
+    constructor(input: List<String>) : this(input.minOf { it.length }, input.size) {
+        require(input.minOf { it.length } == input.maxOf { it.length }) { "Grid is uneven" }
+        data = input.mapIndexed { y, line -> line.mapIndexed { x, char -> Cell(x, y, char.toString()) }.toMutableList() }
     }
 
-    fun getCell(x: Int, y: Int): Cell {
+    constructor(width: Int, height: Int, fill: (Int, Int) -> String) : this(width, height) {
+        for (x in C) {
+            for (y in R) {
+                setValue(x, y, fill(x, y))
+            }
+        }
+    }
+
+    private fun initData(width: Int, height: Int, value: String): List<MutableList<Cell>> {
+        return (0 until height).map { y ->
+            (0 until width).map { x -> Cell(x, y, value) }.toMutableList()
+        }
+    }
+
+
+    fun get(point: Point): Cell {
+        return get(point.x, point.y)
+    }
+
+    fun get(x: Int, y: Int): Cell {
         val realX = if (wrap) (x + width) % width else x // Doesn't work if we're *WAY* out of bounds
         val realY = if (wrap) (y + height) % height else y
         return if (inBounds(realX, realY)) {
@@ -37,7 +59,7 @@ open class Grid(input: List<String>) {
         val cells = mutableListOf<Cell>()
         for (x in 0 until width) {
             for (y in 0 until height) {
-                cells.add(getCell(x, y))
+                cells.add(get(x, y))
             }
         }
         return cells.toList()
@@ -50,7 +72,7 @@ open class Grid(input: List<String>) {
                 if (dx == 0 && dy == 0) continue
                 if (!diagonal && dx != 0 && dy != 0) continue
                 if (includeOob || wrap || inBounds(point.x + dx, point.y + dy)) {
-                    neighbors.add(getCell(point.x + dx, point.y + dy))
+                    neighbors.add(get(point.x + dx, point.y + dy))
                 }
             }
         }
@@ -58,12 +80,12 @@ open class Grid(input: List<String>) {
     }
 
     fun fuzzySelect(point: Point, diagonal: Boolean = true): List<Cell> {
-        val cell = getCell(point)
+        val cell = get(point)
         return fuzzySelect(point, diagonal) { it.value == cell.value }
     }
 
     fun fuzzySelect(point: Point, diagonal: Boolean = true, match: (Cell) -> Boolean): List<Cell> {
-        val start = getCell(point)
+        val start = get(point)
         val selected = mutableSetOf(start)
         val toAssess = mutableListOf(start)
         while(toAssess.isNotEmpty()) {

@@ -57,14 +57,14 @@ fun main() {
 
     fun findPath(grid: Grid): List<Cell> {
         val start = grid.findRegions(Regex("S")).first()
-        val startCell = grid.getCell(start.originX, start.originY)
+        val startCell = grid.get(start.originX, start.originY)
 
         val path = mutableListOf(startCell)
 
         var pipe = findPipe(grid, startCell)
-        while (grid.getCell(pipe).value != "S") {
+        while (grid.get(pipe).value != "S") {
             val prev = path.last()
-            val nextCell = grid.getCell(pipe)
+            val nextCell = grid.get(pipe)
             path.add(nextCell)
             pipe = nextPoint(nextCell, prev)
         }
@@ -109,7 +109,7 @@ fun main() {
         for (x in 0 until grid.width) {
             for (y in 0 until grid.height) {
                 if (x == 0 || x == grid.width - 1 || y == 0 || y == grid.height - 1) {
-                    val cell = grid.getCell(x, y)
+                    val cell = grid.get(x, y)
                     if (cell.value == " ") {
                         grid.fuzzySelect(cell).forEach { grid.setValue(it, ".") }
                     }
@@ -126,7 +126,7 @@ fun main() {
             val nextIndex = (i + di + path.size) % path.size
             val next = path[nextIndex]
             for (outsidePoint in rightSides(next, current)) {
-                val cell = grid.getCell(outsidePoint)
+                val cell = grid.get(outsidePoint)
                 // Mark any outside cells as outside
                 if (cell.value == " ") {
                     grid.fuzzySelect(cell).forEach { grid.setValue(it, ".") }

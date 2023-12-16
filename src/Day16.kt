@@ -43,7 +43,7 @@ fun energize(input: List<String>, starting: Pair<Point, Point>): Long {
             val next = Point(beam.first.x + beam.second.x, beam.first.y + beam.second.y)
             energized.setValue(next, "#")
 
-            when (grid.getCell(next).value) {
+            when (grid.get(next).value) {
                 "|" -> if (beam.second == RIGHT || beam.second == LEFT) {
                     nextBeams.add(Pair(next, UP))
                     nextBeams.add(Pair(next, DOWN))
@@ -76,7 +76,7 @@ fun energize(input: List<String>, starting: Pair<Point, Point>): Long {
         lightBeams.clear()
         for (nextBeam in nextBeams) {
             val dirGrid = dirMap[nextBeam.second]!!
-            if (dirGrid.getCell(nextBeam.first).value == ".") {
+            if (dirGrid.get(nextBeam.first).value == ".") {
                 dirGrid.setValue(nextBeam.first, "#")
                 lightBeams.add(nextBeam)
             }
