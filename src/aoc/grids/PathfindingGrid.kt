@@ -12,7 +12,7 @@ open class PathfindingGrid(input: List<String>) : Grid(input) {
         return wrappedPoints(dest).minOf { heuristicFun(source, it) }
     }
 
-    fun findPath(source: Point, dest: Point): List<Cell> {
+    open fun findPath(source: Point, dest: Point): List<Cell> {
         val nodeMap = List(height) { y ->
             MutableList(width) { x ->
                 PathfindingNode(
