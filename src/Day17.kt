@@ -3,7 +3,10 @@ import aoc.collections.SortedList
 import aoc.grids.*
 import kotlinx.coroutines.runBlocking
 
-class MyGrid(input: List<String>) : PathfindingGrid(input) {
+class MyGrid(input: List<String>, val ultra: Boolean) : PathfindingGrid(input) {
+
+    private val minMovement = if (ultra) 4 else 1
+    private val maxMovement = if (ultra) 10 else 3
 
     override fun findPath(source: Point, dest: Point): List<Cell> {
         val visited = mutableMapOf<Point, MutableList<Node>>()
@@ -14,7 +17,7 @@ class MyGrid(input: List<String>) : PathfindingGrid(input) {
         var goal: Node? = null
         while (toVisit.isNotEmpty() && goal == null) {
             val next = toVisit.removeFirst()
-            if(!worthConsidering(visited, next)) {
+            if (!worthConsidering(visited, next, dest)) {
                 continue
             }
             val previous = visited[next.state.point] ?: mutableListOf()
@@ -22,9 +25,8 @@ class MyGrid(input: List<String>) : PathfindingGrid(input) {
             visited[next.state.point] = previous
             if (next.state.point == dest) {
                 goal = next
-            }
-            else {
-                val following = nextNodes(next, dest).filter { worthConsidering(visited, it) }
+            } else {
+                val following = nextNodes(next, dest).filter { worthConsidering(visited, it, dest) }
                 toVisit.addAll(following)
             }
         }
@@ -58,11 +60,17 @@ class MyGrid(input: List<String>) : PathfindingGrid(input) {
 
     private fun nextNodes(from: Node, dest: Point): List<Node> {
         val dir = from.state.dir
-        val turnLeft = Point(dir.y, dir.x)
-        val turnRight = Point(-dir.y, -dir.x)
 
-
-        val dirs = listOf(dir, turnLeft, turnRight)
+        val dirs = mutableListOf<Point>()
+        // Go straight
+        if (from.state.straight < maxMovement) {
+            dirs.add(dir)
+        }
+        // Turn
+        if (from.state.straight >= minMovement) {
+            dirs.add(Point(dir.y, dir.x))
+            dirs.add(Point(-dir.y, -dir.x))
+        }
 
         return dirs
             .map {
@@ -71,7 +79,6 @@ class MyGrid(input: List<String>) : PathfindingGrid(input) {
                 State(next, it, straight)
             }
             .filter { inBounds(it.point) }
-            .filter { it.straight <= 3 }
             .map { key ->
                 val travelled = from.travelled + distance(from.state.point, key.point)
                 val heur = heuristic(key.point, dest) + key.straight * .01
@@ -79,11 +86,20 @@ class MyGrid(input: List<String>) : PathfindingGrid(input) {
             }
     }
 
-    private fun worthConsidering(visited: Map<Point, List<Node>>, node: Node): Boolean {
+    private fun worthConsidering(visited: Map<Point, List<Node>>, node: Node, dest: Point): Boolean {
+        if (node.state.straight < minMovement && node.state.point == dest) {
+            return false
+        }
         val previousVisits = visited[node.state.point] ?: return true
-        if (previousVisits.filter { it.state.dir == node.state.dir}
+        if (previousVisits
+                .filter { it.state.dir == node.state.dir }
+                .filter { it.state.straight >= minMovement }
                 .filter { it.state.straight <= node.state.straight }
-                .any { it.travelled <= node.travelled }) {
+                .any { it.travelled < node.travelled }
+        ) {
+            return false
+        }
+        if (previousVisits.any { it.travelled + 30 < node.travelled }) {
             return false
         }
         return true
@@ -102,7 +118,7 @@ class MyGrid(input: List<String>) : PathfindingGrid(input) {
 
 fun main() {
     fun part1(input: List<String>): Int {
-        val grid = MyGrid(input)
+        val grid = MyGrid(input, false)
         grid.diagonalMovement = false
         grid.heuristicFun = { x, y -> x.distanceManhattanTo(y) }
 
@@ -115,17 +131,24 @@ fun main() {
             grid.set(point.point, "X")
         }
 
-        grid.gridString().println()
-
         return answer
     }
 
     fun part2(input: List<String>): Int {
-        var answer = 0
-        for (line in input) {
+        val grid = MyGrid(input, true)
+        grid.diagonalMovement = false
+        grid.heuristicFun = { x, y -> x.distanceManhattanTo(y) }
 
+        grid.distanceFun = { _, y -> grid.get(y).value.toDouble() }
+
+        val path = grid.findPath(Point(0, 0), Point(grid.width - 1, grid.height - 1))
+        var answer = 0
+        for (point in path) {
+            answer += grid.get(point.point).value.toInt()
+            grid.set(point.point, "X")
         }
-        return answer + 1
+
+        return answer
     }
 
     fun runParts(inputName: String) {
