@@ -15,7 +15,7 @@ fun main() {
         for (line in input) {
 
         }
-        return answer + 1
+        return answer
     }
 
     fun runParts(inputName: String) {
