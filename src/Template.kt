@@ -2,16 +2,16 @@ import aoc.*
 import kotlinx.coroutines.runBlocking
 
 fun main() {
-    fun part1(input: List<String>): Int {
-        var answer = 0
+    fun part1(input: List<String>): Long {
+        var answer = 0L
         for (line in input) {
 
         }
         return answer
     }
 
-    fun part2(input: List<String>): Int {
-        var answer = 0
+    fun part2(input: List<String>): Long {
+        var answer = 0L
         for (line in input) {
 
         }
@@ -24,11 +24,11 @@ fun main() {
 
         val p1 = part1(input)
         "Part 1: $p1".println()
-        if (p1 != 0) p1.toClipboard()
+        if (p1 != 0L) p1.toClipboard()
 
         val p2 = part2(input)
         "Part 2: $p2".println()
-        if (p2 != 0) p2.toClipboard()
+        if (p2 != 0L) p2.toClipboard()
 
         println()
     }
