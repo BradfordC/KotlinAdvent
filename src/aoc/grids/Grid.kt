@@ -35,8 +35,8 @@ open class Grid(val width: Int, val height: Int, defaultValue: String = ".") {
     }
 
     fun get(x: Int, y: Int): Cell {
-        val realX = if (wrap) (x + width) % width else x // Doesn't work if we're *WAY* out of bounds
-        val realY = if (wrap) (y + height) % height else y
+        val realX = if (wrap) x.mod(width) else x
+        val realY = if (wrap) y.mod(height) else y
         return if (inBounds(realX, realY)) {
             data[realY][realX]
         } else {
@@ -49,8 +49,8 @@ open class Grid(val width: Int, val height: Int, defaultValue: String = ".") {
     }
 
     fun set(x: Int, y: Int, value: String) {
-        val realX = if (wrap) (x + width) % width else x // Doesn't work if we're *WAY* out of bounds
-        val realY = if (wrap) (y + height) % height else y
+        val realX = if (wrap) x.mod(width) else x
+        val realY = if (wrap) y.mod(height) else y
         if (inBounds(realX, realY)) {
             data[realY][realX] = Cell(realX, realY, value)
         }

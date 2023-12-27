@@ -1,5 +1,6 @@
 package aoc.grids
 
+import aoc.println
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
@@ -107,10 +108,13 @@ internal class GridTest {
         val grid = Grid(input)
         grid.wrap = true
 
+        assertEquals(Cell(2, 0, "C"), grid.get(-4, 0))
         assertEquals(Cell(2, 0, "C"), grid.get(-1, 0))
         assertEquals(Cell(0, 2, "G"), grid.get(0, -1))
         assertEquals(Cell(0, 2, "G"), grid.get(3, 2))
+        assertEquals(Cell(0, 2, "G"), grid.get(6, 2))
         assertEquals(Cell(2, 0, "C"), grid.get(2, 3))
+        assertEquals(Cell(1, 1, "E"), grid.get(7, 7))
     }
 
     @Test
