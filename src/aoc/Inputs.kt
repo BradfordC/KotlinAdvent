@@ -29,8 +29,7 @@ fun inputExists(name: String) = Path("resources/$name.txt").exists()
 suspend fun downloadInput(name: String, year: Int = LocalDate.now().year): Boolean {
     val tokenFile = Path("resources/token.txt")
     val token = if (tokenFile.exists()) tokenFile.readLines().firstOrNull() else null
-    if (token.isNullOrEmpty()) {
-        println("""
+    val instructions = """
             No Token Found
             To Download:
             1. Visit https://adventofcode.com/
@@ -40,7 +39,9 @@ suspend fun downloadInput(name: String, year: Int = LocalDate.now().year): Boole
             5. In Headers -> Response Headers -> Set-Cookie, copy the "session" value (between = and ;)
             6. Create "resources/token.txt" file
             7. Paste the value in that file
-        """.trimIndent())
+        """.trimIndent()
+    if (token.isNullOrEmpty()) {
+        println(instructions)
         return false
     }
     val day = name.substring(3, 5).toInt()
@@ -59,6 +60,10 @@ suspend fun downloadInput(name: String, year: Int = LocalDate.now().year): Boole
     if(response.status != HttpStatusCode.OK) {
         response.status.println()
         response.body<String>().println()
+        if (name == "Day01") {
+            println("Be sure to update your auth token:")
+            println(instructions)
+        }
         return false
     }
 
