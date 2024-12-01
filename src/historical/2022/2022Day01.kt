@@ -1,3 +1,5 @@
+package historical.`2022`
+
 import aoc.println
 import aoc.readInput
 import kotlin.math.*

@@ -1,4 +1,4 @@
-rootProject.name = "KotlinAdvent2023"
+rootProject.name = "KotlinAdvent"
 
 dependencyResolutionManagement {
     repositories {

@@ -1,3 +1,5 @@
+package historical.`2023`
+
 import aoc.*
 
 fun main() {

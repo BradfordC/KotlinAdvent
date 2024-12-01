@@ -1,3 +1,5 @@
+package historical.`2023`
+
 import aoc.*
 import kotlinx.coroutines.runBlocking
 import kotlin.math.pow

@@ -1,3 +1,5 @@
+package historical.`2023`
+
 import aoc.grids.Cell
 import aoc.grids.Grid
 import aoc.grids.Point
@@ -95,7 +97,7 @@ fun main() {
         val grid = Grid(input)
         val path = findPath(grid)
 
-        // Clear everything that isn't part of the main pipe
+        // Clear everything that isn't part of the historical.`2022`.historical.`2023`.main pipe
         for (x in 0..grid.width) {
             for (y in 0..grid.height) {
                 grid.set(x, y, " ")

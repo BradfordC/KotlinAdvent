@@ -1,12 +1,13 @@
+package historical.`2023`
+
 import aoc.*
 import kotlinx.coroutines.runBlocking
 import java.util.LinkedList
-import java.util.Queue
 
 data class Pulse(val source: String, val dest: String, val high: Boolean) {
     override fun toString(): String {
         val signal = if(high) "high" else "low"
-        return "Pulse($source -$signal-> $dest)"
+        return "historical.`2023`.Pulse($source -$signal-> $dest)"
     }
 }
 

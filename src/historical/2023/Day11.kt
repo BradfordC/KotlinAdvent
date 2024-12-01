@@ -1,3 +1,5 @@
+package historical.`2023`
+
 import aoc.grids.*
 import aoc.println
 import aoc.readInput

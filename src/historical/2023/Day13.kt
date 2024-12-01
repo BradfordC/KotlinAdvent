@@ -1,3 +1,5 @@
+package historical.`2023`
+
 import aoc.downloadInput
 import aoc.grids.Grid
 import aoc.inputExists

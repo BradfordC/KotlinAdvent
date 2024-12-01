@@ -1,3 +1,5 @@
+package historical.`2023`
+
 import aoc.*
 import aoc.collections.split
 import kotlinx.coroutines.runBlocking
