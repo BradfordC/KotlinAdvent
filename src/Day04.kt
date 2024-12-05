@@ -8,11 +8,13 @@ fun main() {
         var answer = 0L
         val grid = Grid(input)
         for (x in grid.findRegions(Regex("X"))) {
+            val xp = Point(x.originX, x.originY)
             for (dx in -1 .. 1) {
                 for (dy in -1 .. 1) {
-                    if (grid.get(x.originX + dx, x.originY + dy).value == "M"
-                        && grid.get(x.originX + dx * 2, x.originY + dy * 2).value == "A"
-                        && grid.get(x.originX + dx * 3, x.originY + dy * 3).value == "S") {
+                    val dir = Point(dx, dy)
+                    if (grid.get(xp + dir ).value == "M"
+                        && grid.get(xp + dir * 2).value == "A"
+                        && grid.get(xp + dir * 3).value == "S") {
                         answer += 1
                     }
                 }
