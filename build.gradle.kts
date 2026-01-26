@@ -1,7 +1,11 @@
-val ktor_version = "2.3.7"
+val ktor_version = "3.4.0"
 
 plugins {
-    kotlin("jvm") version "1.8.21"
+    kotlin("jvm") version "2.3.0"
+}
+
+kotlin {
+    jvmToolchain(25)
 }
 
 sourceSets {
@@ -12,14 +16,14 @@ sourceSets {
 
 tasks {
     wrapper {
-        gradleVersion = "8.5"
+        gradleVersion = "9.3.0"
     }
 }
 
 dependencies {
     implementation("io.ktor:ktor-client-core:$ktor_version")
     implementation("io.ktor:ktor-client-okhttp:$ktor_version")
-    implementation("org.junit.jupiter:junit-jupiter:5.10.0")
+    implementation("org.junit.jupiter:junit-jupiter:6.0.2")
 }
 repositories {
     mavenCentral()
