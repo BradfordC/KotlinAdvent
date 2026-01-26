@@ -1,3 +1,5 @@
+package historical.`2024`
+
 import aoc.*
 import kotlinx.coroutines.runBlocking
 
