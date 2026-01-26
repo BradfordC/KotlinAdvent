@@ -14,7 +14,7 @@ fun main() {
             val sameDir = difs.filter { x -> x < 0 }.size == difs.size || difs.filter { x -> x > 0 }.size == difs.size
             val smallNums = difs.map { x -> abs(x) }.filter { x -> x > 3 }.isEmpty()
             if (sameDir && smallNums) {
-                answer++;
+                answer++
             }
         }
         return answer
