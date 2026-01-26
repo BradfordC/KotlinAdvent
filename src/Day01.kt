@@ -2,42 +2,36 @@ import aoc.*
 import kotlinx.coroutines.runBlocking
 
 fun main() {
-
-    fun canEqual(answer: Long, constants: List<Long>): Boolean {
-        val ops = listOf("*", "+")
-        val operators = mutableListOf<Int>()
-        var result = constants[0]
-        var index = 1
-        var prev = 0
-
-        while (true) {
-            if (index == constants.size) {
-            }
-            var newResult = result
-            if (index > prev) {
-                operators.add(0)
-                newResult = newResult * constants[index]
-            }
-            if (index == prev) {
-                val prevOp = operators.removeLast()
-                val 
-            }
-        }
-
-    }
-
     fun part1(input: List<String>): Long {
         var answer = 0L
-        canEqual(100L, listOf(10L, 9L, 5L, 5L))
+        var direction = 50L
         for (line in input) {
+            val rotation = line.parseInts()[0]
+            if (line.startsWith('R')) {
+                direction += rotation
+            }
+            else {
+                direction -= rotation
+            }
+            if (direction % 100 == 0L) {
+                answer += 1
+            }
         }
         return answer
     }
 
     fun part2(input: List<String>): Long {
         var answer = 0L
+        var direction = 50L
         for (line in input) {
-
+            val fullRotations = line.parseInts()[0] / 100
+            val absRotation = line.parseInts()[0] % 100
+            val newDirection = direction + if (line.startsWith('R')) absRotation else -absRotation
+            if (newDirection >= 100 || (newDirection <= 0 && direction != 0L)) {
+                answer += 1
+            }
+            direction = Math.floorMod(newDirection, 100L)
+            answer += fullRotations
         }
         return answer
     }
@@ -59,7 +53,7 @@ fun main() {
 
 
 
-    val inputName = "Day07"
+    val inputName = "Day01"
     if (inputExists(inputName)) {
         if (inputExists(inputName + "_Sample")) {
             runParts(inputName + "_Sample")
@@ -69,7 +63,7 @@ fun main() {
     else {
         var success: Boolean
         runBlocking {
-            success = downloadInput(inputName)
+            success = downloadInput(inputName, 2025)
         }
         val status = if (success) "Succeeded" else "Failed"
         "Download $status".println()

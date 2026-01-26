@@ -15,6 +15,12 @@ open class Grid(val width: Int, val height: Int, defaultValue: String = ".") {
         data = input.mapIndexed { y, line -> line.mapIndexed { x, char -> Cell(x, y, char.toString()) }.toMutableList() }
     }
 
+    constructor(other: Grid) : this(other.width, other.height) {
+        for (cell in other.cells()) {
+            set(cell.point.x, cell.point.y, cell.value)
+        }
+    }
+
     constructor(width: Int, height: Int, fill: (Int, Int) -> String) : this(width, height) {
         for (x in xs) {
             for (y in ys) {
